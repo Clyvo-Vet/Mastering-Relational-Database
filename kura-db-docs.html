@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KURA · Documentação do Banco de Dados</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #F4F0E8;
+  --bg2:       #EAE5D8;
+  --paper:     #FDFAF4;
+  --ink:       #1A160E;
+  --ink2:      #3A3226;
+  --mute:      #7A7060;
+  --line:      #D4CCBA;
+  --line2:     #E2DACE;
+
+  --sage:      #3A5235;
+  --sage2:     #4A6944;
+  --sage-bg:   rgba(58,82,53,.08);
+  --sage-line: rgba(58,82,53,.3);
+
+  --amber:     #B87010;
+  --amber2:    #D49020;
+  --amber-bg:  rgba(184,112,16,.08);
+  --amber-line:rgba(184,112,16,.3);
+
+  --blue:      #1E3A6A;
+  --blue-bg:   rgba(30,58,106,.07);
+  --blue-line: rgba(30,58,106,.3);
+
+  --red:       #8B2020;
+  --red-bg:    rgba(139,32,32,.07);
+  --red-line:  rgba(139,32,32,.3);
+
+  --purple:    #4A1E70;
+  --purple-bg: rgba(74,30,112,.07);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:'Instrument Sans',sans-serif;
+  font-size:14px;
+  line-height:1.65;
+  overflow-x:hidden;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.18;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ---- SIDEBAR ---- */
+.layout{display:flex;min-height:100vh;position:relative;z-index:1;}
+
+.sidebar{
+  width:260px;flex-shrink:0;
+  background:var(--sage);
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  display:flex;flex-direction:column;
+}
+.sidebar-brand{
+  padding:32px 24px 24px;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.brand-kicker{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);margin-bottom:8px;
+}
+.brand-name{
+  font-family:'Fraunces',serif;font-size:26px;font-weight:400;
+  font-style:italic;color:#fff;line-height:1;
+}
+.brand-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:4px;}
+
+nav{padding:16px 0;flex:1;}
+.nav-section{
+  padding:8px 24px 4px;
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.15em;text-transform:uppercase;
+  color:rgba(255,255,255,.35);margin-top:8px;
+}
+.nav-item{
+  display:block;padding:8px 24px;font-size:12px;
+  color:rgba(255,255,255,.7);text-decoration:none;
+  border-left:2px solid transparent;
+  transition:all .15s;
+}
+.nav-item:hover,.nav-item.active{
+  color:#fff;background:rgba(255,255,255,.08);
+  border-left-color:var(--amber2);
+}
+.nav-item .tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  background:rgba(255,255,255,.12);padding:1px 6px;
+  border-radius:2px;margin-left:6px;
+  vertical-align:middle;letter-spacing:.04em;
+}
+.nav-item .tag.net{background:rgba(81,178,255,.2);color:#7EC8FF;}
+.nav-item .tag.java{background:rgba(255,181,100,.2);color:#FFB564;}
+.nav-item .tag.front{background:rgba(160,255,160,.2);color:#8AE68A;}
+
+.sidebar-footer{
+  padding:16px 24px;border-top:1px solid rgba(255,255,255,.1);
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  color:rgba(255,255,255,.35);
+}
+
+/* ---- MAIN ---- */
+.main{flex:1;min-width:0;}
+
+/* ---- HERO ---- */
+.hero{
+  background:var(--sage);
+  padding:72px 64px 56px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;right:-60px;top:-60px;
+  width:360px;height:360px;border-radius:50%;
+  background:rgba(255,255,255,.04);pointer-events:none;
+}
+.hero-kicker{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--amber2);margin-bottom:20px;
+}
+.hero h1{
+  font-family:'Fraunces',serif;font-size:clamp(36px,4.5vw,58px);
+  font-weight:300;line-height:1.05;letter-spacing:-.02em;
+  color:#fff;margin-bottom:20px;
+  font-variation-settings:'opsz' 72;
+}
+.hero h1 em{font-style:italic;color:rgba(255,255,255,.7);}
+.hero-desc{
+  font-size:16px;color:rgba(255,255,255,.7);max-width:600px;
+  line-height:1.6;margin-bottom:36px;
+}
+.hero-stats{
+  display:flex;gap:40px;flex-wrap:wrap;
+  padding-top:28px;border-top:1px solid rgba(255,255,255,.15);
+}
+.stat .n{
+  font-family:'Fraunces',serif;font-size:32px;font-weight:300;
+  font-style:italic;color:var(--amber2);line-height:1;
+}
+.stat .l{font-size:11px;color:rgba(255,255,255,.5);margin-top:2px;
+  font-family:'JetBrains Mono',monospace;letter-spacing:.06em;text-transform:uppercase;}
+
+/* ---- SECTION ---- */
+.section{padding:64px;border-bottom:1px solid var(--line);}
+.section:last-child{border-bottom:none;}
+
+.sec-label{
+  display:flex;align-items:center;gap:10px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.18em;text-transform:uppercase;
+  color:var(--mute);margin-bottom:16px;
+}
+.sec-label::before{content:'';width:24px;height:1px;background:var(--mute);}
+.sec-label.net{color:var(--blue);}
+.sec-label.net::before{background:var(--blue);}
+.sec-label.java{color:var(--amber);}
+.sec-label.java::before{background:var(--amber);}
+.sec-label.front{color:var(--sage2);}
+.sec-label.front::before{background:var(--sage2);}
+
+h2.sec-title{
+  font-family:'Fraunces',serif;font-size:clamp(28px,3.5vw,44px);
+  font-weight:400;line-height:1.05;letter-spacing:-.02em;
+  margin-bottom:12px;
+}
+h2.sec-title em{font-style:italic;color:var(--sage2);}
+h2.sec-title .amb{color:var(--amber);}
+
+.sec-lead{
+  font-size:16px;color:var(--ink2);max-width:680px;
+  line-height:1.6;margin-bottom:40px;
+  font-family:'Fraunces',serif;font-weight:300;
+  font-variation-settings:'opsz' 60;
+}
+
+/* ---- DOMAIN BADGE ---- */
+.domain-stripe{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;margin-bottom:28px;
+  border-left:3px solid;font-size:13px;
+}
+.domain-stripe.net{background:var(--blue-bg);border-color:var(--blue);color:var(--blue);}
+.domain-stripe.java{background:var(--amber-bg);border-color:var(--amber);color:var(--amber);}
+.domain-stripe.shared{background:var(--sage-bg);border-color:var(--sage2);color:var(--sage2);}
+.domain-stripe strong{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;}
+
+/* ---- TABLE CARD ---- */
+.tables-grid{display:flex;flex-direction:column;gap:24px;}
+
+.table-card{background:var(--paper);border:1px solid var(--line);}
+.tc-head{
+  padding:16px 20px;border-bottom:1px solid var(--line);
+  display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;
+}
+.tc-name{
+  font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;
+  letter-spacing:.04em;
+}
+.tc-desc{font-size:13px;color:var(--mute);flex:1;}
+.tc-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  padding:2px 8px;border-radius:2px;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  white-space:nowrap;
+}
+.tc-tag.net{background:var(--blue-bg);color:var(--blue);}
+.tc-tag.java{background:var(--amber-bg);color:var(--amber);}
+.tc-tag.shared{background:var(--sage-bg);color:var(--sage2);}
+.tc-tag.iot{background:var(--purple-bg);color:var(--purple);}
+.tc-tag.audit{background:var(--red-bg);color:var(--red);}
+
+.tc-body{overflow-x:auto;}
+
+.cols-table{width:100%;border-collapse:collapse;}
+.cols-table th{
+  background:var(--bg2);padding:8px 12px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--mute);
+  border-bottom:1px solid var(--line);font-weight:500;
+}
+.cols-table td{
+  padding:9px 12px;border-bottom:1px solid var(--line2);
+  font-size:12px;vertical-align:top;
+}
+.cols-table tr:last-child td{border-bottom:none;}
+.cols-table tr:hover td{background:var(--bg2);}
+
+.col-name{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:500;color:var(--ink);}
+.col-name.pk{color:var(--amber);font-weight:700;}
+.col-name.fk{color:var(--blue);}
+.col-type{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--mute);}
+.col-constraint{font-size:11px;color:var(--sage2);}
+.col-desc{font-size:12px;color:var(--ink2);line-height:1.4;}
+
+.tc-footer{
+  padding:10px 20px;background:var(--bg2);border-top:1px solid var(--line);
+  font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mute);
+  display:flex;gap:20px;flex-wrap:wrap;
+}
+.tc-footer span{display:flex;align-items:center;gap:5px;}
+
+/* ---- RELATIONSHIP DIAGRAM (ASCII styled) ---- */
+.rel-diagram{
+  background:var(--ink);color:#E6E0D0;
+  padding:28px 32px;font-family:'JetBrains Mono',monospace;
+  font-size:12px;line-height:1.8;overflow-x:auto;
+  margin:24px 0;
+}
+.rd-net{color:#7EC8FF;}
+.rd-java{color:#FFB564;}
+.rd-shared{color:#8AE68A;}
+.rd-iot{color:#C8A0FF;}
+.rd-audit{color:#FF8A8A;}
+.rd-arrow{color:rgba(230,224,208,.4);}
+.rd-label{color:rgba(230,224,208,.5);font-size:10px;}
+
+/* ---- CALLOUT ---- */
+.callout{padding:16px 20px;margin:20px 0;border-left:3px solid;}
+.callout.info{background:var(--blue-bg);border-color:var(--blue);}
+.callout.warn{background:var(--amber-bg);border-color:var(--amber);}
+.callout.ok{background:var(--sage-bg);border-color:var(--sage2);}
+.callout.danger{background:var(--red-bg);border-color:var(--red);}
+.callout-title{
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  margin-bottom:6px;
+}
+.callout.info .callout-title{color:var(--blue);}
+.callout.warn .callout-title{color:var(--amber);}
+.callout.ok .callout-title{color:var(--sage2);}
+.callout.danger .callout-title{color:var(--red);}
+.callout p{font-size:13px;color:var(--ink2);line-height:1.5;}
+
+/* ---- CODE INLINE ---- */
+code{
+  font-family:'JetBrains Mono',monospace;font-size:11px;
+  background:var(--bg2);padding:1px 5px;
+  border:1px solid var(--line);border-radius:2px;color:var(--ink);
+}
+
+/* ---- FLOW STEPS ---- */
+.flow{display:flex;flex-direction:column;gap:0;margin:20px 0;}
+.flow-step{
+  display:flex;gap:20px;padding:16px 0;
+  border-bottom:1px solid var(--line2);
+}
+.flow-step:last-child{border-bottom:none;}
+.flow-n{
+  font-family:'Fraunces',serif;font-size:28px;font-weight:300;
+  font-style:italic;color:var(--sage2);line-height:1;
+  min-width:40px;text-align:center;padding-top:2px;
+}
+.flow-body h4{font-family:'Fraunces',serif;font-size:16px;font-weight:500;margin-bottom:4px;}
+.flow-body p{font-size:13px;color:var(--ink2);line-height:1.5;}
+.flow-body code{margin:0 2px;}
+
+/* ---- ENDPOINT EXAMPLES ---- */
+.endpoint{
+  background:var(--ink);color:#E6E0D0;
+  padding:14px 18px;font-family:'JetBrains Mono',monospace;
+  font-size:12px;margin:12px 0;display:flex;gap:12px;align-items:baseline;
+}
+.ep-method{font-weight:700;min-width:48px;}
+.ep-method.get{color:#8AE68A;}
+.ep-method.post{color:#7EC8FF;}
+.ep-method.put{color:#FFB564;}
+.ep-method.del{color:#FF8A8A;}
+.ep-path{color:rgba(230,224,208,.8);}
+.ep-desc{color:rgba(230,224,208,.4);font-size:11px;margin-left:auto;}
+
+/* ---- VIEW CARD ---- */
+.view-card{
+  background:var(--sage-bg);border:1px solid var(--sage-line);
+  padding:16px 20px;margin:12px 0;
+}
+.view-name{
+  font-family:'JetBrains Mono',monospace;font-size:12px;
+  font-weight:700;color:var(--sage2);margin-bottom:6px;
+}
+.view-desc{font-size:13px;color:var(--ink2);}
+
+/* ---- CHECKLIST ---- */
+.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;}
+.check-item{
+  background:var(--paper);border:1px solid var(--line);
+  padding:14px 16px;display:flex;gap:10px;align-items:flex-start;
+}
+.check-icon{color:var(--sage2);font-size:14px;line-height:1.4;flex-shrink:0;}
+.check-text h5{font-size:13px;font-weight:600;margin-bottom:2px;}
+.check-text p{font-size:12px;color:var(--mute);line-height:1.4;}
+
+/* ---- FK OWNERSHIP TABLE ---- */
+.ownership-table{width:100%;border-collapse:collapse;margin:20px 0;}
+.ownership-table th{
+  background:var(--ink);color:var(--paper);
+  padding:10px 14px;text-align:left;
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+}
+.ownership-table td{
+  padding:9px 14px;border-bottom:1px solid var(--line2);font-size:12px;
+}
+.ownership-table tr:hover td{background:var(--bg2);}
+.own-table{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;}
+.badge{
+  font-family:'JetBrains Mono',monospace;font-size:9px;
+  padding:2px 8px;border-radius:2px;font-weight:700;
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.badge.escreve{background:rgba(58,82,53,.15);color:var(--sage2);}
+.badge.le{background:rgba(30,58,106,.1);color:var(--blue);}
+.badge.nao{background:var(--bg2);color:var(--mute);}
+
+/* ---- REVEAL ---- */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.in{opacity:1;transform:none;}
+
+@media(max-width:900px){
+  .layout{flex-direction:column;}
+  .sidebar{width:100%;height:auto;position:relative;}
+  .section{padding:40px 24px;}
+  .hero{padding:48px 24px;}
+  .check-grid{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="brand-kicker">Clyvo Vet · FIAP 2026</div>
+    <div class="brand-name">KURA</div>
+    <div class="brand-sub">Documentação do Banco de Dados</div>
+  </div>
+  <nav>
+    <div class="nav-section">Visão Geral</div>
+    <a href="#overview" class="nav-item active">Arquitetura Geral</a>
+    <a href="#domains" class="nav-item">Domínios e Ownership</a>
+    <a href="#diagram" class="nav-item">Mapa de Relacionamentos</a>
+
+    <div class="nav-section">Backend</div>
+    <a href="#dotnet" class="nav-item">.NET — Backend Clínica <span class="tag net">.NET</span></a>
+    <a href="#java" class="nav-item">Java — Backend Tutor <span class="tag java">Java</span></a>
+    <a href="#shared" class="nav-item">Tabelas Compartilhadas</a>
+    <a href="#iot" class="nav-item">IoT — Sensor de Vacinas</a>
+
+    <div class="nav-section">Frontend</div>
+    <a href="#frontend-clinica" class="nav-item">App Clínica (Gustavo) <span class="tag front">RN</span></a>
+    <a href="#frontend-tutor" class="nav-item">App Tutor (Guilherme) <span class="tag front">RN</span></a>
+    <a href="#views" class="nav-item">Views Prontas pra Consumir</a>
+
+    <div class="nav-section">Referência</div>
+    <a href="#checklist" class="nav-item">Checklist pré-código</a>
+    <a href="#lgpd" class="nav-item">Decisões LGPD</a>
+  </nav>
+  <div class="sidebar-footer">
+    kura_schema_v2.sql · 23 tabelas · 28 FKs
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-kicker">Documentação técnica · Para todo o time</div>
+  <h1>O banco de dados <em>explicado</em><br>para quem vai construir.</h1>
+  <p class="hero-desc">Esse documento existe pra ninguém precisar adivinhar — nem o dev de .NET, nem o de Java, nem quem está fazendo o app mobile. Cada seção fala diretamente com quem precisa.</p>
+  <div class="hero-stats">
+    <div class="stat"><div class="n">23</div><div class="l">Tabelas</div></div>
+    <div class="stat"><div class="n">28</div><div class="l">Foreign keys</div></div>
+    <div class="stat"><div class="n">3</div><div class="l">Domínios</div></div>
+    <div class="stat"><div class="n">2</div><div class="l">Views prontas</div></div>
+    <div class="stat"><div class="n">30</div><div class="l">Constraints</div></div>
+  </div>
+</div>
+
+<!-- OVERVIEW -->
+<section id="overview" class="section reveal">
+  <div class="sec-label">01 · Visão geral</div>
+  <h2 class="sec-title">O que é o banco e <em>como funciona</em>.</h2>
+  <p class="sec-lead">KURA usa um banco Oracle 19c compartilhado entre dois backends. O banco é único, mas cada serviço tem responsabilidade clara sobre quais tabelas pode escrever. Isso evita conflito, duplicação de dado e bugs de integração.</p>
+
+  <div class="callout info">
+    <div class="callout-title">Princípio central</div>
+    <p>O banco não tem "dono" — mas cada tabela tem. Felipe (.NET) nunca escreve em <code>CONTA_TUTOR</code>. Nikolas (Java) nunca escreve em <code>EVENTO_CLINICO</code>. Quem lê qualquer tabela? Ambos, quando necessário. Essa regra evita 90% dos bugs de integração antes mesmo de acontecerem.</p>
+  </div>
+
+  <div class="rel-diagram">
+    <div style="color:rgba(230,224,208,.5);font-size:10px;margin-bottom:16px;">CAMADAS DO SISTEMA</div>
+
+<span class="rd-shared">     TUTOR (dado pessoal) ←── cadastrado pela clínica via .NET</span>
+<span class="rd-arrow">          │</span>
+<span class="rd-java">     CONTA_TUTOR (credencial) ←── criado pelo Java quando usa portal</span>
+<span class="rd-arrow">          │</span>
+<span class="rd-arrow">    ┌─────┴──────────────────────────┐</span>
+<span class="rd-arrow">    │                                │</span>
+<span class="rd-java">  CONSENTIMENTO                AGENDAMENTO</span>
+<span class="rd-label">  (Java · LGPD)              (Java · futuro)</span>
+<span class="rd-arrow">                                    │ quando realizado</span>
+<span class="rd-arrow">                                    ▼</span>
+<span class="rd-net">                          EVENTO_CLINICO ←── registrado pelo .NET</span>
+<span class="rd-arrow">                              │</span>
+<span class="rd-arrow">             ┌────────────────┼────────────────┐</span>
+<span class="rd-net">           VACINA        PRESCRICAO         EXAME</span>
+<span class="rd-arrow">                              │</span>
+<span class="rd-net">                    PRESCRICAO_MEDICAMENTO</span>
+<span class="rd-arrow">                                                │</span>
+<span class="rd-net">                                        NOTIFICACAO ──► Luna/WhatsApp</span>
+<span class="rd-iot">
+     DISPOSITIVO_IOT ──► LEITURA_TEMPERATURA ──► ALERTA_TEMPERATURA</span>
+<span class="rd-label">     (Sensor geladeira de vacinas · disciplina IoT)</span>
+<span class="rd-audit">
+     LOG_ERRO ←── qualquer procedure pode escrever aqui</span>
+  </div>
+</section>
+
+<!-- DOMAINS -->
+<section id="domains" class="section reveal">
+  <div class="sec-label">02 · Ownership</div>
+  <h2 class="sec-title">Quem <em>escreve</em> em qual tabela.</h2>
+  <p class="sec-lead">A regra é simples: se você não está na coluna "escreve" de uma tabela, você só pode ler. Nunca faça INSERT ou UPDATE em tabela de outro domínio.</p>
+
+  <table class="ownership-table">
+    <thead>
+      <tr>
+        <th>Tabela</th>
+        <th>Felipe · .NET</th>
+        <th>Nikolas · Java</th>
+        <th>Por quê</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td class="own-table">CLINICA</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Admin da clínica é gerenciado pelo .NET</td></tr>
+      <tr><td class="own-table">VETERINARIO</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Profissional vinculado à clínica</td></tr>
+      <tr><td class="own-table">TUTOR</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Cadastrado quando pet chega à clínica</td></tr>
+      <tr><td class="own-table">PET</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Paciente gerenciado pelo prontuário clínico</td></tr>
+      <tr><td class="own-table">TUTOR_PET</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Vínculo tutor↔pet gerenciado pela clínica</td></tr>
+      <tr><td class="own-table">ESPECIE / RACA</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Catálogos de domínio</td></tr>
+      <tr><td class="own-table">EVENTO_CLINICO</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Histórico clínico = domínio .NET</td></tr>
+      <tr><td class="own-table">VACINA / PRESCRICAO / EXAME</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">Subtipos do evento clínico</td></tr>
+      <tr><td class="own-table">NOTIFICACAO</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge le">Lê</span></td><td style="color:var(--mute);font-size:11px;">.NET gera, Luna consome lendo o status</td></tr>
+      <tr><td class="own-table">DOCUMENTO</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge nao">Não usa</span></td><td style="color:var(--mute);font-size:11px;">Anexos clínicos, não relevantes pro tutor ainda</td></tr>
+      <tr><td class="own-table">DISPOSITIVO_IOT</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge nao">Não usa</span></td><td style="color:var(--mute);font-size:11px;">Sensor gerenciado pela clínica</td></tr>
+      <tr><td class="own-table">LEITURA_TEMPERATURA</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge nao">Não usa</span></td><td style="color:var(--mute);font-size:11px;">Time-series do sensor, ingerido pelo .NET</td></tr>
+      <tr><td class="own-table">ALERTA_TEMPERATURA</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge nao">Não usa</span></td><td style="color:var(--mute);font-size:11px;">Alerta gerado pelo backend ao detectar faixa ruim</td></tr>
+      <tr><td class="own-table">CONTA_TUTOR</td><td><span class="badge nao">Não toca</span></td><td><span class="badge escreve">Escreve</span></td><td style="color:var(--mute);font-size:11px;">Credencial = domínio Java exclusivamente</td></tr>
+      <tr><td class="own-table">CONSENTIMENTO</td><td><span class="badge nao">Não toca</span></td><td><span class="badge escreve">Escreve</span></td><td style="color:var(--mute);font-size:11px;">LGPD = tutor aceita via portal Java</td></tr>
+      <tr><td class="own-table">AGENDAMENTO</td><td><span class="badge le">Lê</span></td><td><span class="badge escreve">Escreve</span></td><td style="color:var(--mute);font-size:11px;">Tutor agenda via Java; .NET só vê na grade</td></tr>
+      <tr><td class="own-table">LOG_ERRO</td><td><span class="badge escreve">Escreve</span></td><td><span class="badge escreve">Escreve</span></td><td style="color:var(--mute);font-size:11px;">Ambos logam erros de procedure aqui</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- .NET -->
+<section id="dotnet" class="section reveal">
+  <div class="sec-label net">03 · Backend .NET</div>
+  <h2 class="sec-title">O que <em>Felipe</em> constrói no .NET.</h2>
+  <p class="sec-lead">O Backend Clínica é o coração operacional do sistema. Três clientes diferentes consomem essa API — app mobile da clínica (Gustavo), bot Luna e o backend tutor (Nikolas via leitura). Se essa API cair ou devolver dado errado, derruba o sistema inteiro.</p>
+
+  <div class="domain-stripe net">
+    <strong>.NET ASP.NET CORE</strong>
+    Responsabilidade: domínio clínico operacional. Tudo que acontece no consultório passa por aqui.
+  </div>
+
+  <div class="tables-grid">
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">CLINICA</span>
+        <span class="tc-desc">Entidade raiz. Pai de Veterinário e Tutor.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name pk">ID_CLINICA</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">PK · SEQ_CLINICA</td><td class="col-desc">Identificador único. EF Core mapeia como <code>int</code> gerado por sequence.</td></tr>
+            <tr><td><span class="col-name">NR_CNPJ</span></td><td class="col-type">VARCHAR2(18)</td><td class="col-constraint">UNIQUE · NOT NULL</td><td class="col-desc">Não pode ter duas clínicas com mesmo CNPJ. Formato: XX.XXX.XXX/0001-XX.</td></tr>
+            <tr><td><span class="col-name">ST_ATIVA</span></td><td class="col-type">CHAR(1)</td><td class="col-constraint">CHECK IN ('S','N')</td><td class="col-desc">Soft delete — nunca deletar clínica, apenas desativar. Filtrar ST_ATIVA='S' nas listagens.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>🔑 PK: ID_CLINICA</span>
+        <span>🔗 Filhos: VETERINARIO, TUTOR, AGENDAMENTO, DISPOSITIVO_IOT</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">VETERINARIO</span>
+        <span class="tc-desc">Profissional vinculado a uma clínica. CRMV único por UF.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name pk">ID_VETERINARIO</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">PK</td><td class="col-desc">Referenciado por PET e EVENTO_CLINICO. Principal FK de rastreabilidade.</td></tr>
+            <tr><td><span class="col-name fk">ID_CLINICA</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">FK CLINICA · NOT NULL</td><td class="col-desc">Vet pertence a uma clínica. Não existe veterinário "solto".</td></tr>
+            <tr><td><span class="col-name">NR_CRMV + SG_UF_CRMV</span></td><td class="col-type">VARCHAR2 · CHAR(2)</td><td class="col-constraint">UNIQUE composta</td><td class="col-desc">CRMV 12345 em SP ≠ CRMV 12345 em RJ. Constraint garante isso.</td></tr>
+            <tr><td><span class="col-name">ST_ATIVO</span></td><td class="col-type">CHAR(1)</td><td class="col-constraint">CHECK ('S','N')</td><td class="col-desc">Soft delete. Vet afastado não deve aparecer na agenda.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>🔑 PK: ID_VETERINARIO</span><span>🔗 FK: CLINICA</span><span>🔗 Filhos: PET, EVENTO_CLINICO, AGENDAMENTO</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">PET</span>
+        <span class="tc-desc">Paciente. ID_PET = prontuário único do animal. Central no sistema.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name pk">ID_PET</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">PK · prontuário</td><td class="col-desc">Toda a timeline clínica aponta pra cá. <strong>Não deletar nunca</strong> — use ST_ATIVO='N'.</td></tr>
+            <tr><td><span class="col-name fk">ID_ESPECIE</span></td><td class="col-type">NUMBER(5)</td><td class="col-constraint">FK · NOT NULL</td><td class="col-desc">Obrigatório. Todo pet tem espécie (cão, gato, ave...).</td></tr>
+            <tr><td><span class="col-name fk">ID_RACA</span></td><td class="col-type">NUMBER(5)</td><td class="col-constraint">FK · NULL OK</td><td class="col-desc">Pode ser NULL para SRD (Sem Raça Definida).</td></tr>
+            <tr><td><span class="col-name fk">ID_VETERINARIO_RESP</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">FK · NULL OK</td><td class="col-desc">Veterinário responsável principal. NULL = qualquer vet da clínica.</td></tr>
+            <tr><td><span class="col-name">SG_SEXO</span></td><td class="col-type">CHAR(1)</td><td class="col-constraint">CHECK ('M','F')</td><td class="col-desc">Obrigatório. M=macho, F=fêmea.</td></tr>
+            <tr><td><span class="col-name">SG_PORTE</span></td><td class="col-type">CHAR(1)</td><td class="col-constraint">CHECK ('P','M','G')</td><td class="col-desc">P=pequeno, M=médio, G=grande. Null aceito.</td></tr>
+            <tr><td><span class="col-name">DS_ALERGIAS</span></td><td class="col-type">VARCHAR2(500)</td><td class="col-constraint">NULL OK</td><td class="col-desc">Texto livre de alergias conhecidas. Exibir com destaque no prontuário.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>🔑 PK: ID_PET = prontuário</span><span>🔗 FKs: ESPECIE, RACA, VETERINARIO</span><span>🔗 Filhos: TUTOR_PET, EVENTO_CLINICO, DOCUMENTO, AGENDAMENTO</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">TUTOR_PET</span>
+        <span class="tc-desc">Associativa N:N entre tutor e pet. Um pet pode ter múltiplos tutores.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name pk">ID_TUTOR + ID_PET</span></td><td class="col-type">NUMBER(10) × 2</td><td class="col-constraint">PK composta</td><td class="col-desc">Chave composta. Mesmo tutor não pode ser vinculado duas vezes ao mesmo pet.</td></tr>
+            <tr><td><span class="col-name">ST_PRINCIPAL</span></td><td class="col-type">CHAR(1)</td><td class="col-constraint">CHECK ('S','N')</td><td class="col-desc">Tutor principal = quem recebe notificações da Luna. Regra de negócio: apenas 1 principal por pet.</td></tr>
+            <tr><td><span class="col-name">DS_VINCULO</span></td><td class="col-type">VARCHAR2(40)</td><td class="col-constraint">CHECK (enum)</td><td class="col-desc">PROPRIETARIO | CO_TUTOR | CUIDADOR | TEMPORARIO.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>⚠️ Decisão de design: N:N desde o início — pet pode ter casal de tutores sem refatorar</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">EVENTO_CLINICO</span>
+        <span class="tc-desc">Núcleo da timeline. Todo atendimento = uma linha aqui.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name pk">ID_EVENTO</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">PK</td><td class="col-desc">Referenciado por VACINA, PRESCRICAO, EXAME, DOCUMENTO, NOTIFICACAO.</td></tr>
+            <tr><td><span class="col-name fk">ID_PET</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">FK · NOT NULL</td><td class="col-desc">De quem é o evento. A timeline filtra por aqui.</td></tr>
+            <tr><td><span class="col-name fk">ID_TIPO_EVENTO</span></td><td class="col-type">NUMBER(5)</td><td class="col-constraint">FK · NOT NULL</td><td class="col-desc">CONSULTA, VACINA, PRESCRICAO, EXAME, RETORNO etc. Não hardcode — lê da tabela TIPO_EVENTO.</td></tr>
+            <tr><td><span class="col-name">DS_MODALIDADE</span></td><td class="col-type">VARCHAR2(20)</td><td class="col-constraint">CHECK (enum)</td><td class="col-desc">PRESENCIAL | TELEORIENTACAO | TELEMONITORAMENTO. Exigência CFMV.</td></tr>
+            <tr><td><span class="col-name">DS_CID10_VET</span></td><td class="col-type">VARCHAR2(20)</td><td class="col-constraint">NULL OK</td><td class="col-desc">Classificação diagnóstica veterinária. Alimenta relatórios da clínica.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>⚠️ Especialização: evento comum + tabelas filhas (VACINA, PRESCRICAO, EXAME) por tipo</span>
+        <span>🔗 Índice: DT_EVENTO DESC (performance nas queries de timeline)</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">VACINA · PRESCRICAO · PRESCRICAO_MEDICAMENTO · EXAME</span>
+        <span class="tc-desc">Subtipos de evento. 1:1 com EVENTO_CLINICO. ON DELETE CASCADE.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Tabela</th><th>Campo crítico</th><th>Por que existe separada</th></tr></thead>
+          <tbody>
+            <tr><td class="own-table">VACINA</td><td class="col-type">DT_PROXIMA_DOSE</td><td class="col-desc">Campo alimenta os lembretes da Luna. Sem ele, não há notificação proativa.</td></tr>
+            <tr><td class="own-table">PRESCRICAO</td><td class="col-type">DS_HASH_ASSINATURA</td><td class="col-desc">Placeholder para assinatura digital (Lei 14.063/2020). Preencher em fase 2.</td></tr>
+            <tr><td class="own-table">PRESCRICAO_MEDICAMENTO</td><td class="col-type">DS_DOSAGEM + DS_FREQUENCIA</td><td class="col-desc">1 receita pode ter N medicamentos. Essa é a tabela que o tutor vê no app.</td></tr>
+            <tr><td class="own-table">EXAME</td><td class="col-type">ST_STATUS + DS_RESULTADO</td><td class="col-desc">SOLICITADO → REALIZADO → ENTREGUE. DS_RESULTADO é CLOB (texto longo).</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>⚠️ ON DELETE CASCADE — se o EVENTO_CLINICO for deletado (não faça isso), subtipo some junto</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">NOTIFICACAO</span>
+        <span class="tc-desc">Fila de mensagens para a Luna disparar. .NET gera, Luna consome.</span>
+        <span class="tc-tag net">.NET</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name">DS_CANAL</span></td><td class="col-type">WHATSAPP | EMAIL | PUSH</td><td class="col-desc">Canal de envio. Sprint 1 foca em WHATSAPP.</td></tr>
+            <tr><td><span class="col-name">DS_TIPO</span></td><td class="col-type">enum</td><td class="col-desc">LEMBRETE_VACINA, RETORNO, PRESCRICAO_NOVA, RED_FLAG, BOAS_VINDAS...</td></tr>
+            <tr><td><span class="col-name">DT_AGENDADA</span></td><td class="col-type">TIMESTAMP</td><td class="col-desc">Quando deve ser enviada. Job da Luna faz: <code>WHERE ST_STATUS='PENDENTE' AND DT_AGENDADA &lt;= SYSTIMESTAMP</code>.</td></tr>
+            <tr><td><span class="col-name">ST_STATUS</span></td><td class="col-type">enum</td><td class="col-desc">PENDENTE → ENVIADA → ENTREGUE → LIDA. Rastreabilidade completa.</td></tr>
+            <tr><td><span class="col-name">DS_ERRO_ENVIO</span></td><td class="col-type">VARCHAR2(500)</td><td class="col-desc">Registrar o erro quando ST_STATUS='FALHA'. Não perder o motivo.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>🔗 Índices: ST_STATUS, DT_AGENDADA (query da Luna roda a cada minuto)</span>
+      </div>
+    </div>
+
+  </div><!-- /tables-grid .NET -->
+
+  <div class="callout ok" style="margin-top:32px;">
+    <div class="callout-title">Fluxo completo de um atendimento (.NET)</div>
+    <div class="flow">
+      <div class="flow-step"><div class="flow-n">1</div><div class="flow-body"><h4>Recepção cadastra</h4><p>INSERT em <code>TUTOR</code> + <code>PET</code> + <code>TUTOR_PET</code>. Se tutor já existe (mesmo CPF), reutiliza. UNIQUE no CPF garante que não duplica.</p></div></div>
+      <div class="flow-step"><div class="flow-n">2</div><div class="flow-body"><h4>Atendimento começa</h4><p>INSERT em <code>EVENTO_CLINICO</code> com <code>ID_TIPO_EVENTO</code> = CONSULTA e <code>DS_MODALIDADE</code> = PRESENCIAL.</p></div></div>
+      <div class="flow-step"><div class="flow-n">3</div><div class="flow-body"><h4>Vacina aplicada</h4><p>INSERT em <code>VACINA</code> com <code>ID_EVENTO</code> do evento criado. Backend calcula <code>DT_PROXIMA_DOSE</code> baseado no protocolo da vacina.</p></div></div>
+      <div class="flow-step"><div class="flow-n">4</div><div class="flow-body"><h4>Backend gera lembrete</h4><p>INSERT em <code>NOTIFICACAO</code> com <code>DS_TIPO</code>='LEMBRETE_VACINA', <code>DT_AGENDADA</code> = DT_PROXIMA_DOSE - 12 dias, <code>ST_STATUS</code>='PENDENTE'.</p></div></div>
+      <div class="flow-step"><div class="flow-n">5</div><div class="flow-body"><h4>Luna dispara</h4><p>Job cron lê <code>VW_VACINAS_VENCENDO</code>, encontra o tutor pelo <code>DS_WHATSAPP</code> e envia mensagem. UPDATE em <code>NOTIFICACAO.ST_STATUS</code>='ENVIADA'.</p></div></div>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:16px;">
+    <div class="callout-title">Endpoints esperados pelo Frontend Clínica</div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/pets?tutorId={id}&amp;status=alerta</span><span class="ep-desc">lista pacientes com filtro</span></div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/pets/{id}/timeline</span><span class="ep-desc">usa VW_TIMELINE_PET</span></div>
+    <div class="endpoint"><span class="ep-method post">POST</span><span class="ep-path">/api/eventos</span><span class="ep-desc">cria evento + subtipo</span></div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/dashboard/hoje</span><span class="ep-desc">agenda + alertas do dia</span></div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/dispositivos/{id}/leituras</span><span class="ep-desc">temperaturas IoT paginadas</span></div>
+  </div>
+</section>
+
+<!-- JAVA -->
+<section id="java" class="section reveal">
+  <div class="sec-label java">04 · Backend Java</div>
+  <h2 class="sec-title">O que <em>Nikolas</em> constrói no Java.</h2>
+  <p class="sec-lead">O Backend Tutor cuida de identidade, acesso e intenção. "Quem é o tutor", "ele pode acessar o portal", "o que ele quer agendar" — tudo isso é Java. Não toca nos dados clínicos, só lê.</p>
+
+  <div class="domain-stripe java">
+    <strong>JAVA SPRING BOOT</strong>
+    Responsabilidade: domínio identidade, credenciais, consentimentos LGPD e agendamentos futuros.
+  </div>
+
+  <div class="tables-grid">
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">CONTA_TUTOR</span>
+        <span class="tc-desc">Credencial de acesso ao portal. Separada de TUTOR para não misturar PII com senha.</span>
+        <span class="tc-tag java">Java</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name pk">ID_CONTA</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">PK</td><td class="col-desc">ID da sessão/conta. Diferente de ID_TUTOR (que é o cadastro pessoal).</td></tr>
+            <tr><td><span class="col-name fk">ID_TUTOR</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">FK TUTOR · UNIQUE</td><td class="col-desc">1:1 com TUTOR. Um tutor, uma conta. Se precisar de múltiplos acessos no futuro, revisa.</td></tr>
+            <tr><td><span class="col-name">DS_SENHA_HASH</span></td><td class="col-type">VARCHAR2(256)</td><td class="col-constraint">NOT NULL</td><td class="col-desc"><strong>BCrypt obrigatório.</strong> Nunca SHA, nunca texto plano. Se estiver em dúvida, usa Spring Security BCryptPasswordEncoder.</td></tr>
+            <tr><td><span class="col-name">NR_TENTATIVAS_LOGIN</span></td><td class="col-type">NUMBER(2)</td><td class="col-constraint">DEFAULT 0</td><td class="col-desc">Incrementar a cada falha de login. Ao atingir limite (ex: 5), preencher DT_BLOQUEIO.</td></tr>
+            <tr><td><span class="col-name">DT_BLOQUEIO</span></td><td class="col-type">TIMESTAMP</td><td class="col-constraint">NULL = desbloqueada</td><td class="col-desc">Conta bloqueada por tentativas excessivas. NULL = pode logar. Desbloqueia depois de tempo ou manualmente.</td></tr>
+            <tr><td><span class="col-name">DS_TOKEN_RESET</span></td><td class="col-type">VARCHAR2(256)</td><td class="col-constraint">NULL OK</td><td class="col-desc">Token de reset de senha. Invalidar após uso — setar NULL no update da senha.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>⚠️ Felipe NUNCA escreve nessa tabela. Apenas Java.</span>
+        <span>🔗 UK: ID_TUTOR (1 tutor = 1 conta)</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">CONSENTIMENTO</span>
+        <span class="tc-desc">Registro imutável de cada aceite/revogação LGPD. Não atualiza linha — sempre insere nova.</span>
+        <span class="tc-tag java">Java</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name">DS_TIPO</span></td><td class="col-type">VARCHAR2(40)</td><td class="col-constraint">CHECK (enum)</td><td class="col-desc">TELEORIENTACAO | LEMBRETES | DADOS_ANONIMOS | COMPARTILHAR_SEGURADORA | MARKETING.</td></tr>
+            <tr><td><span class="col-name">DS_VERSAO_TERMO</span></td><td class="col-type">VARCHAR2(20)</td><td class="col-constraint">NOT NULL</td><td class="col-desc">Versão do termo exibido (ex: "v1.0"). Quando atualizar o termo, nova versão = novo INSERT.</td></tr>
+            <tr><td><span class="col-name">ST_ACEITO</span></td><td class="col-type">CHAR(1)</td><td class="col-constraint">CHECK ('S','N')</td><td class="col-desc">S=aceitou, N=revogou. Para saber se o tutor <em>hoje</em> aceita determinado tipo, buscar o registro mais recente por DS_TIPO.</td></tr>
+            <tr><td><span class="col-name">DS_IP_ACEITE</span></td><td class="col-type">VARCHAR2(45)</td><td class="col-constraint">NULL OK</td><td class="col-desc">IPv4 ou IPv6 do aceite. Evidência legal. Pegar do request no controller.</td></tr>
+            <tr><td><span class="col-name">DT_REVOGACAO</span></td><td class="col-type">TIMESTAMP</td><td class="col-constraint">NULL = ativo</td><td class="col-desc">Quando tutor revoga, não update — novo INSERT com ST_ACEITO='N' e DT_REVOGACAO preenchida.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>⚠️ Histórico imutável — nunca UPDATE nessa tabela. Sempre INSERT.</span>
+        <span>🔍 Query ativa: SELECT MAX(DT_ACEITE) ... WHERE DS_TIPO=? ORDER BY DT_ACEITE DESC FETCH FIRST 1 ROWS ONLY</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">AGENDAMENTO</span>
+        <span class="tc-desc">Intenção futura de atendimento. Diferente de EVENTO_CLINICO que é passado realizado.</span>
+        <span class="tc-tag java">Java</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>Regra</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name">ST_STATUS</span></td><td class="col-type">VARCHAR2(20)</td><td class="col-constraint">CHECK (enum)</td><td class="col-desc">INTENCAO → AGENDADO → CONFIRMADO → REALIZADO | CANCELADO | NAO_COMPARECEU.</td></tr>
+            <tr><td><span class="col-name">DS_ORIGEM</span></td><td class="col-type">VARCHAR2(20)</td><td class="col-constraint">CHECK (enum)</td><td class="col-desc">PORTAL | WHATSAPP_LUNA | TELEFONE | BALCAO. Rastreabilidade de canal de aquisição.</td></tr>
+            <tr><td><span class="col-name">DS_OBSERVACOES</span></td><td class="col-type">VARCHAR2(1000)</td><td class="col-constraint">NULL OK</td><td class="col-desc">Campo livre para o tutor descrever o motivo. Exibir para o veterinário antes da consulta.</td></tr>
+            <tr><td><span class="col-name fk">ID_EVENTO_GERADO</span></td><td class="col-type">NUMBER(10)</td><td class="col-constraint">FK EVENTO_CLINICO · NULL</td><td class="col-desc">Quando o agendamento vira atendimento real, o .NET cria o EVENTO_CLINICO e Nikolas atualiza esse campo. Vínculo entre intenção e realidade.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>🔗 FKs: TUTOR, PET, CLINICA, VETERINARIO (nullable), EVENTO_CLINICO (nullable)</span>
+        <span>🔗 Índices: STATUS, DT_AGENDAMENTO (agenda semanal da clínica)</span>
+      </div>
+    </div>
+
+  </div><!-- /tables-grid Java -->
+
+  <div class="callout ok" style="margin-top:32px;">
+    <div class="callout-title">Fluxo de onboarding do tutor no portal (Java)</div>
+    <div class="flow">
+      <div class="flow-step"><div class="flow-n">1</div><div class="flow-body"><h4>Clínica cadastra tutor</h4><p>Já está em <code>TUTOR</code> (feito pelo .NET). Java só precisa ler — não recadastra.</p></div></div>
+      <div class="flow-step"><div class="flow-n">2</div><div class="flow-body"><h4>Tutor acessa convite</h4><p>Link de invite aponta para endpoint Java que verifica se existe <code>CONTA_TUTOR</code> para aquele ID_TUTOR.</p></div></div>
+      <div class="flow-step"><div class="flow-n">3</div><div class="flow-body"><h4>Cria conta</h4><p>INSERT em <code>CONTA_TUTOR</code> com email e senha hasheada. <code>ST_EMAIL_VERIFICADO='N'</code>.</p></div></div>
+      <div class="flow-step"><div class="flow-n">4</div><div class="flow-body"><h4>Aceita termos LGPD</h4><p>INSERT em <code>CONSENTIMENTO</code> para cada tipo (LEMBRETES, TELEORIENTACAO...). ST_ACEITO='S', versão atual do termo.</p></div></div>
+      <div class="flow-step"><div class="flow-n">5</div><div class="flow-body"><h4>Tutor agenda consulta</h4><p>INSERT em <code>AGENDAMENTO</code> com DS_ORIGEM='PORTAL'. Clínica vê na grade de agendamentos.</p></div></div>
+    </div>
+  </div>
+
+  <div class="callout warn" style="margin-top:16px;">
+    <div class="callout-title">Endpoints esperados pelo App Tutor</div>
+    <div class="endpoint"><span class="ep-method post">POST</span><span class="ep-path">/api/auth/login</span><span class="ep-desc">retorna JWT</span></div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/tutores/{id}/pets</span><span class="ep-desc">lista pets do tutor (lê PET + TUTOR_PET)</span></div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/pets/{id}/timeline</span><span class="ep-desc">usa VW_TIMELINE_PET</span></div>
+    <div class="endpoint"><span class="ep-method get">GET</span><span class="ep-path">/api/tutores/{id}/consentimentos</span><span class="ep-desc">status atual por tipo</span></div>
+    <div class="endpoint"><span class="ep-method post">POST</span><span class="ep-path">/api/agendamentos</span><span class="ep-desc">criar agendamento</span></div>
+  </div>
+</section>
+
+<!-- IOT -->
+<section id="iot" class="section reveal">
+  <div class="sec-label" style="color:var(--purple);">05 · IoT</div>
+  <h2 class="sec-title">Sensor de <em>temperatura</em> das vacinas.</h2>
+  <p class="sec-lead">Vacinas perdem eficácia fora da faixa 2–8°C (Anvisa RDC 197/2017). Um sensor ESP32 monitora a geladeira da clínica e envia leituras a cada 60 segundos. O banco armazena o histórico e os alertas.</p>
+
+  <div class="domain-stripe" style="background:var(--purple-bg);border-left-color:var(--purple);color:var(--purple);">
+    <strong>DISCIPLINA: Disruptive IoT/IA</strong>
+    3 tabelas · Domínio .NET · Frontend clínica consome para exibir dashboard de temperatura.
+  </div>
+
+  <div class="tables-grid">
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">DISPOSITIVO_IOT</span>
+        <span class="tc-desc">Cadastro do sensor. Cada geladeira = 1 dispositivo. DS_IDENTIFICADOR = MAC address do ESP32.</span>
+        <span class="tc-tag iot" style="background:var(--purple-bg);color:var(--purple);">IoT</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name">DS_IDENTIFICADOR</span></td><td class="col-type">VARCHAR2(60) · UNIQUE</td><td class="col-desc">MAC address ou ID único do ESP32. O device autentica usando esse campo para enviar leituras.</td></tr>
+            <tr><td><span class="col-name">NR_TEMP_MINIMA / MAXIMA</span></td><td class="col-type">NUMBER(4,2)</td><td class="col-desc">Faixa aceitável configurável por dispositivo. Default Anvisa: 2.0°C a 8.0°C.</td></tr>
+            <tr><td><span class="col-name">NR_INTERVALO_LEITURA</span></td><td class="col-type">NUMBER(4)</td><td class="col-desc">Segundos entre leituras. Default 60s = 1.440 leituras/dia. Ajustável.</td></tr>
+            <tr><td><span class="col-name">DT_ULTIMA_LEITURA</span></td><td class="col-type">TIMESTAMP</td><td class="col-desc">Atualizado a cada POST de leitura. Se diferença com SYSTIMESTAMP > 5× intervalo, gerar alerta SENSOR_OFFLINE.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">LEITURA_TEMPERATURA</span>
+        <span class="tc-desc">Time-series. ~1.440 linhas/dia/dispositivo. Nunca deletar — fonte de auditoria de lotes.</span>
+        <span class="tc-tag iot" style="background:var(--purple-bg);color:var(--purple);">IoT</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name">NR_TEMPERATURA</span></td><td class="col-type">NUMBER(5,2)</td><td class="col-desc">Temperatura em °C. CHECK: entre -40 e 80 (range físico do sensor).</td></tr>
+            <tr><td><span class="col-name">NR_UMIDADE</span></td><td class="col-type">NUMBER(5,2) · NULL</td><td class="col-desc">Se sensor DHT11/DHT22, envia umidade também. DS18B20 não tem — deixa NULL.</td></tr>
+            <tr><td><span class="col-name">ST_DENTRO_FAIXA</span></td><td class="col-type">CHAR(1)</td><td class="col-desc">Calculado pelo backend no momento do INSERT comparando com DISPOSITIVO_IOT.NR_TEMP_MINIMA/MAXIMA.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="tc-footer">
+        <span>🔗 Índice: (ID_DISPOSITIVO, DT_LEITURA DESC) — query de gráfico busca por device + período</span>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="tc-head">
+        <span class="tc-name">ALERTA_TEMPERATURA</span>
+        <span class="tc-desc">1 alerta por evento problemático, não 1 por leitura. Evita spam no dashboard.</span>
+        <span class="tc-tag iot" style="background:var(--purple-bg);color:var(--purple);">IoT</span>
+      </div>
+      <div class="tc-body">
+        <table class="cols-table">
+          <thead><tr><th>Coluna</th><th>Tipo</th><th>O que significa</th></tr></thead>
+          <tbody>
+            <tr><td><span class="col-name">DS_SEVERIDADE</span></td><td class="col-type">enum</td><td class="col-desc">BAIXA (8-10°C) → MEDIA (10-12°C) → ALTA (&gt;12°C) → CRITICA (&gt;20°C ou offline &gt;30min).</td></tr>
+            <tr><td><span class="col-name">DT_FIM</span></td><td class="col-type">TIMESTAMP · NULL</td><td class="col-desc">NULL = alerta ativo. Preenchido quando temperatura volta à faixa. Dashboard filtra <code>DT_FIM IS NULL</code>.</td></tr>
+            <tr><td><span class="col-name">ST_RESOLVIDO</span></td><td class="col-type">CHAR(1)</td><td class="col-desc">Resolvido manualmente (responsável identificado, ação tomada). Diferente de DT_FIM — pode ter voltado à faixa mas o alerta ainda precisa de ação humana.</td></tr>
+            <tr><td><span class="col-name">DS_ACAO_TOMADA</span></td><td class="col-type">VARCHAR2(500)</td><td class="col-desc">O que foi feito quando resolvido. Importante para auditoria de lotes junto à Anvisa.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FRONTEND CLINICA -->
+<section id="frontend-clinica" class="section reveal">
+  <div class="sec-label front">06 · Frontend — App Clínica</div>
+  <h2 class="sec-title">O que <em>Gustavo</em> precisa saber para construir as telas.</h2>
+  <p class="sec-lead">Você não escreve no banco diretamente — você consome a API do Felipe. Mas entender a estrutura de dados te impede de pedir coisas impossíveis da API e te ajuda a montar as telas com dados reais desde o início.</p>
+
+  <div class="callout info">
+    <div class="callout-title">Regra de ouro para frontend</div>
+    <p>Sempre use <code>ST_ATIVO = 'S'</code> nos filtros — não exibir pets ou tutores inativos. A API deve filtrar isso, mas se vier tudo da API, o front também pode filtrar.</p>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Dashboard — o que exibir e de onde vem</h3>
+
+  <div class="check-grid">
+    <div class="check-item"><div class="check-icon">📅</div><div class="check-text"><h5>Consultas de hoje</h5><p>Vem de <code>AGENDAMENTO</code> filtrado por <code>DT_AGENDAMENTO</code> entre hoje 00:00 e 23:59 + <code>ST_STATUS IN ('AGENDADO','CONFIRMADO')</code>.</p></div></div>
+    <div class="check-item"><div class="check-icon">⚠️</div><div class="check-text"><h5>Alertas ativos</h5><p>Duas fontes: <code>VW_VACINAS_VENCENDO</code> (vacinas nos próximos 30 dias) e <code>ALERTA_TEMPERATURA</code> onde <code>DT_FIM IS NULL AND ST_RESOLVIDO='N'</code>.</p></div></div>
+    <div class="check-item"><div class="check-icon">🐾</div><div class="check-text"><h5>Últimos pacientes</h5><p>Vem de <code>EVENTO_CLINICO</code> ordenado por <code>DT_EVENTO DESC</code> com JOIN em PET. Limite 5.</p></div></div>
+    <div class="check-item"><div class="check-icon">🌡️</div><div class="check-text"><h5>Status do sensor (IoT)</h5><p>Último registro de <code>LEITURA_TEMPERATURA</code> por dispositivo + alertas ativos de <code>ALERTA_TEMPERATURA</code>. Badge verde/vermelho conforme faixa.</p></div></div>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Lista de pacientes — o que cada coluna da tabela significa</h3>
+
+  <div class="callout info">
+    <div class="callout-title">Como montar o card de pet</div>
+    <p><strong>Nome:</strong> <code>PET.NM_PET</code> — <strong>Espécie/Raça:</strong> <code>ESPECIE.NM_ESPECIE</code> + <code>RACA.NM_RACA</code> — <strong>Idade:</strong> calcular do <code>PET.DT_NASCIMENTO</code> — <strong>Tutor:</strong> buscar em <code>TUTOR_PET WHERE ST_PRINCIPAL='S'</code> e pegar <code>TUTOR.NM_TUTOR</code> — <strong>Badge de status:</strong> verde se sem vacina vencendo, âmbar se vencendo em &lt;30 dias, vermelho se vencida.</p>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Prontuário — abas e suas tabelas</h3>
+
+  <div class="flow">
+    <div class="flow-step"><div class="flow-n" style="color:var(--amber);">📋</div><div class="flow-body"><h4>Aba Timeline</h4><p>Consumir <code>GET /pets/{id}/timeline</code> que usa <code>VW_TIMELINE_PET</code>. Ordenar por <code>DT_EVENTO DESC</code>. Cada item mostra: tipo do evento (ícone por <code>NM_TIPO_EVENTO</code>), data, veterinário e diagnóstico.</p></div></div>
+    <div class="flow-step"><div class="flow-n" style="color:var(--amber);">💉</div><div class="flow-body"><h4>Aba Vacinas</h4><p>JOIN entre <code>VACINA</code> e <code>EVENTO_CLINICO</code> filtrado por <code>ID_PET</code>. Mostrar <code>NM_VACINA, DT_APLICACAO, NR_LOTE, DT_PROXIMA_DOSE</code>. Badge de vencimento calculado no front ou vindo da API.</p></div></div>
+    <div class="flow-step"><div class="flow-n" style="color:var(--amber);">💊</div><div class="flow-body"><h4>Aba Receitas</h4><p>JOIN <code>PRESCRICAO → PRESCRICAO_MEDICAMENTO → MEDICAMENTO</code>. Um card por PRESCRICAO com lista de medicamentos abaixo. Mostrar <code>DS_DOSAGEM</code> e <code>DS_FREQUENCIA</code>.</p></div></div>
+    <div class="flow-step"><div class="flow-n" style="color:var(--amber);">🔬</div><div class="flow-body"><h4>Aba Exames</h4><p><code>EXAME</code> filtrado por <code>ID_EVENTO IN (SELECT ID_EVENTO FROM EVENTO_CLINICO WHERE ID_PET=?)</code>. Badge por <code>ST_STATUS</code>: SOLICITADO=cinza, REALIZADO=âmbar, ENTREGUE=verde.</p></div></div>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Dashboard IoT — gráfico de temperatura</h3>
+
+  <div class="callout ok">
+    <div class="callout-title">Como exibir o gráfico de temperatura</div>
+    <p>A API retorna array de <code>{DT_LEITURA, NR_TEMPERATURA, ST_DENTRO_FAIXA}</code> do endpoint <code>GET /api/dispositivos/{id}/leituras?horas=24</code>. No gráfico de linha: linha verde se ST_DENTRO_FAIXA='S', vermelha se 'N'. Linha tracejada horizontal em 2°C e 8°C (faixa Anvisa). Alertas ativos = card vermelho acima do gráfico com <code>DS_MENSAGEM</code>.</p>
+  </div>
+</section>
+
+<!-- FRONTEND TUTOR -->
+<section id="frontend-tutor" class="section reveal">
+  <div class="sec-label front">07 · Frontend — App Tutor (Kura)</div>
+  <h2 class="sec-title">O que <em>Guilherme</em> precisa saber para construir as telas.</h2>
+  <p class="sec-lead">O app Kura é a interface do tutor. Você consome a API Java (Nikolas) pra dados de identidade e agendamento, e a API .NET (Felipe) pra dados clínicos do pet. As Views do banco já fazem o JOIN pesado — você recebe o dado pronto.</p>
+
+  <div class="callout warn">
+    <div class="callout-title">Autenticação JWT — como funciona</div>
+    <p>Ao fazer login, a API Java retorna um token JWT. Esse token vai no header de todas as requisições subsequentes: <code>Authorization: Bearer {token}</code>. O token tem expiração — implemente refresh token ou redirecionar para login. Dados do tutor logado (ID_TUTOR, NM_TUTOR) estão no payload do JWT — não precisa de GET separado pra isso.</p>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Tela Home — Meus Pets</h3>
+
+  <div class="check-grid">
+    <div class="check-item"><div class="check-icon">🐾</div><div class="check-text"><h5>Lista de pets</h5><p><code>GET /api/tutores/{id}/pets</code> — Java lê TUTOR_PET WHERE ID_TUTOR=? AND ST_PRINCIPAL='S' JOIN PET. Retorna NM_PET, NM_ESPECIE, NM_RACA, SG_SEXO, ST_CASTRADO.</p></div></div>
+    <div class="check-item"><div class="check-icon">🔔</div><div class="check-text"><h5>Alertas do pet</h5><p>Vem da API .NET: vacinas vencendo próximos 30 dias via <code>VW_VACINAS_VENCENDO</code>. Badge no card do pet. Tutor vê sem precisar entrar no prontuário.</p></div></div>
+    <div class="check-item"><div class="check-icon">📅</div><div class="check-text"><h5>Próximo agendamento</h5><p><code>AGENDAMENTO WHERE ID_TUTOR=? AND DT_AGENDAMENTO &gt; SYSTIMESTAMP AND ST_STATUS IN ('AGENDADO','CONFIRMADO') ORDER BY DT_AGENDAMENTO ASC FETCH FIRST 1</code>. Exibir abaixo do card do pet.</p></div></div>
+    <div class="check-item"><div class="check-icon">🏥</div><div class="check-text"><h5>Clínica vinculada</h5><p>Exibir NM_CLINICA e DS_TELEFONE da clínica que cadastrou o tutor. Vem pelo TUTOR.ID_CLINICA → JOIN CLINICA.</p></div></div>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Tela de Perfil do Pet — Timeline</h3>
+
+  <div class="callout info">
+    <div class="callout-title">VW_TIMELINE_PET — use essa view</div>
+    <p>A view já faz todos os JOINs: PET + EVENTO_CLINICO + VETERINARIO + TIPO_EVENTO. Você recebe <code>{ID_EVENTO, NM_TIPO_EVENTO, DT_EVENTO, NM_VETERINARIO, DS_DIAGNOSTICO, DS_MODALIDADE}</code>. Ordene por <code>DT_EVENTO DESC</code>. Use <code>NM_TIPO_EVENTO</code> para escolher o ícone de cada item da timeline.</p>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Tela de Consentimentos LGPD</h3>
+
+  <div class="callout warn">
+    <div class="callout-title">Como exibir e atualizar consentimentos</div>
+    <p>Para cada tipo (LEMBRETES, TELEORIENTACAO, DADOS_ANONIMOS...), buscar o registro mais recente em <code>CONSENTIMENTO</code> e verificar se <code>ST_ACEITO='S'</code>. Exibir toggle: ligado = aceito, desligado = revogado. Ao mudar: POST para <code>/api/consentimentos</code> com o tipo e o novo estado. A API cria novo registro — não atualiza. O toggle representa o estado atual, não o histórico.</p>
+  </div>
+
+  <h3 style="font-family:'Fraunces',serif;font-size:22px;font-weight:500;margin:32px 0 16px;letter-spacing:-.01em;">Tela de Receitas Ativas</h3>
+
+  <div class="callout info">
+    <div class="callout-title">Como montar a tela de prescrições</div>
+    <p>Buscar <code>PRESCRICAO WHERE ID_EVENTO IN (eventos do pet)</code>. Para cada prescrição, buscar <code>PRESCRICAO_MEDICAMENTO JOIN MEDICAMENTO</code>. Montar card: nome do medicamento (<code>NM_MEDICAMENTO</code>), dosagem (<code>DS_DOSAGEM</code>), frequência (<code>DS_FREQUENCIA</code>), duração (<code>NR_DURACAO_DIAS</code> dias), instruções (<code>DS_INSTRUCOES</code>). Exibir data de validade da receita (<code>PRESCRICAO.DT_VALIDADE</code>) — destacar se vencida.</p>
+  </div>
+</section>
+
+<!-- VIEWS -->
+<section id="views" class="section reveal">
+  <div class="sec-label front">08 · Views prontas</div>
+  <h2 class="sec-title">Consultas <em>já construídas</em> no banco.</h2>
+  <p class="sec-lead">Duas views no banco fazem os JOINs pesados por você. Ambos os backends e o frontend podem consumir via endpoint da API sem montar SQL complexo.</p>
+
+  <div class="view-card">
+    <div class="view-name">VW_TIMELINE_PET</div>
+    <div class="view-desc">Retorna toda a timeline de um pet com JOIN em EVENTO_CLINICO, VETERINARIO e TIPO_EVENTO. Filtrar por <code>ID_PET</code> e ordenar por <code>DT_EVENTO DESC</code>. Usada pelo frontend tutor (tela de perfil) e pela Luna (quando tutor pergunta sobre histórico).</div>
+  </div>
+
+  <div class="view-card">
+    <div class="view-name">VW_VACINAS_VENCENDO</div>
+    <div class="view-desc">Retorna todos os pets com vacinas vencendo nos próximos 30 dias. Já faz JOIN com TUTOR (via TUTOR_PET onde ST_PRINCIPAL='S'), PET, VACINA e CLINICA. Retorna <code>DS_WHATSAPP</code> do tutor principal e <code>DIAS_RESTANTES</code> calculado. Job da Luna lê essa view diariamente para gerar NOTIFICACAO.</div>
+  </div>
+</section>
+
+<!-- CHECKLIST -->
+<section id="checklist" class="section reveal">
+  <div class="sec-label">09 · Checklist</div>
+  <h2 class="sec-title">O que validar <em>antes de escrever código</em>.</h2>
+
+  <div class="check-grid">
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>DER aprovado (Guilherme)</h5><p>Ninguém cria migration ou entidade JPA antes do DER estar validado. Bloqueante para todo o time.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>Oracle rodando local (Clayton)</h5><p>Docker com imagem <code>gvenzl/oracle-xe</code>. String de conexão igual ao que vai para Azure.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>Sequences criadas</h5><p>Executar seção 1 do kura_schema_v2.sql. Sem sequence, INSERT com NEXTVAL falha.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>Tipos cadastrados (TIPO_EVENTO, ESPECIE, RACA)</h5><p>Inserir dados de lookup antes de qualquer entidade que depende deles. Seed obrigatório.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>ST_ATIVO em todos os GETs</h5><p>Toda listagem filtra <code>WHERE ST_ATIVO='S'</code>. Nunca retornar registros inativos.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>Soft delete, nunca DELETE físico</h5><p>Atualizar ST_ATIVO='N'. DELETE físico quebra FKs e perde histórico clínico.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>Senha com BCrypt (Nikolas)</h5><p><code>Spring Security BCryptPasswordEncoder</code>. Nunca armazenar em texto plano. Verificar com <code>matches()</code>.</p></div></div>
+    <div class="check-item"><div class="check-icon">✅</div><div class="check-text"><h5>CONSENTIMENTO: sempre INSERT, nunca UPDATE</h5><p>Histórico LGPD deve ser imutável. Estado atual = registro mais recente por tipo.</p></div></div>
+  </div>
+</section>
+
+<!-- LGPD -->
+<section id="lgpd" class="section reveal" style="border-bottom:none;">
+  <div class="sec-label" style="color:var(--amber);">10 · Decisões LGPD</div>
+  <h2 class="sec-title">Por que podemos usar dados do tutor <em>antes</em> do portal.</h2>
+  <p class="sec-lead">Pergunta legítima e importante. A resposta está na base legal, não no consentimento.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:24px 0;">
+    <div style="background:var(--sage-bg);border:1px solid var(--sage-line);padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage2);margin-bottom:12px;">✅ O que pode sem consentimento do portal</div>
+      <ul style="list-style:none;font-size:13px;color:var(--ink2);line-height:2;">
+        <li>→ Armazenar nome, CPF, telefone do tutor</li>
+        <li>→ Manter prontuário do pet (obrigação CFMV)</li>
+        <li>→ Emitir nota fiscal do atendimento</li>
+        <li>→ Entrar em contato em caso de urgência</li>
+        <li>→ Enviar lembrete de vacina (relação contratual)</li>
+      </ul>
+      <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--sage2);">Base: art. 7º, V (execução de contrato) + VI (obrigação legal)</div>
+    </div>
+    <div style="background:var(--amber-bg);border:1px solid var(--amber-line);padding:24px;">
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);margin-bottom:12px;">⚠️ O que requer consentimento do portal (Java)</div>
+      <ul style="list-style:none;font-size:13px;color:var(--ink2);line-height:2;">
+        <li>→ Teleorientação via canais digitais (CFMV 1.465/2022)</li>
+        <li>→ Comunicação de marketing</li>
+        <li>→ Uso de dados para pesquisa/analytics</li>
+        <li>→ Compartilhamento com seguradora</li>
+        <li>→ Notificações promocionais</li>
+      </ul>
+      <div style="margin-top:12px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--amber);">Tabela CONSENTIMENTO · Domínio Java</div>
+    </div>
+  </div>
+
+  <div class="callout ok">
+    <div class="callout-title">O campo TUTOR.ST_AVISO_PRIVACIDADE</div>
+    <p>Adicionamos esse campo na v2 do schema. Quando a recepcionista cadastra o tutor, deve marcar <code>ST_AVISO_PRIVACIDADE='S'</code> e <code>DS_VERSAO_AVISO='v1.0'</code>. Isso registra que o tutor foi informado sobre o tratamento de dados no balcão (transparência LGPD art. 6º, VI). Não é consentimento formal — é evidência de transparência. Diferença importante para eventual auditoria.</p>
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const obs = new IntersectionObserver(e => {
+  e.forEach(i => { if(i.isIntersecting) i.target.classList.add('in'); });
+},{threshold:.05,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal,.table-card,.check-item,.flow-step').forEach(el=>{
+  el.classList.add('reveal'); obs.observe(el);
+});
+
+// Sidebar active
+const items = document.querySelectorAll('.nav-item');
+const sections = document.querySelectorAll('section[id],.hero');
+window.addEventListener('scroll',()=>{
+  const y = window.scrollY + 120;
+  sections.forEach(s=>{
+    if(s.offsetTop <= y && s.offsetTop + s.offsetHeight > y){
+      items.forEach(i=>i.classList.remove('active'));
+      const a = document.querySelector(`.nav-item[href="#${s.id}"]`);
+      if(a) a.classList.add('active');
+    }
+  });
+});
+</script>
+</body>
+</html>
